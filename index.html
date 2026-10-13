@@ -1,516 +1,241 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#2563eb">
-    <title>SISTEMA DE GESTION DE REPORTES - Instrumentos</title>
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- jsPDF y html2canvas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; -webkit-tap-highlight-color: transparent; }
-        
-        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); padding: 20px; margin-bottom: 20px; }
-        .input-modern { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; background-color: #f9fafb; }
-        .input-modern:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); background-color: white; }
-        .label-modern { font-weight: 600; font-size: 0.85rem; color: #374151; margin-bottom: 6px; display: block; }
-        
-        /* Estilos para el PDF (Oculto en pantalla) */
-        #pdf-template { 
-            position: absolute; left: -9999px; top: 0; 
-            width: 210mm; background: white; padding: 10mm; box-sizing: border-box;
-            font-family: 'Arial', sans-serif; font-size: 10px; color: black;
-        }
-        .pdf-table { width: 100%; border-collapse: collapse; }
-        .pdf-table td { border: 1px solid black; padding: 4px; vertical-align: top; }
-        .pdf-section-title { background-color: #e5e7eb; text-align: center; font-weight: bold; padding: 3px; border: 1px solid black; border-bottom: none; }
-        .pdf-label { font-weight: bold; font-size: 9px; }
-        .pdf-text { min-height: 15px; display: block; }
-        .pdf-checkbox { display: inline-block; width: 12px; height: 12px; border: 1px solid black; margin-right: 5px; text-align: center; line-height: 12px; font-size: 9px; font-weight: bold; }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sistema de Gestión de Reportes – Instrumentos</title>
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF1F3;--panel:#fff;--ink:#12222B;--mute:#5A6A73;--line:#C5CFD5;--head:#0F3A56;--headink:#fff;--band:#DDE5EA;--amber:#F2A900;--amberink:#2A1D00;--field:#F8FAFB;--ok:#1F7A4D;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C171D;--panel:#142530;--ink:#E7EEF2;--mute:#9AAAB3;--line:#2C4250;--head:#0A2B42;--band:#1B3342;--field:#0F1E27}}
+:root[data-theme="dark"]{--bg:#0C171D;--panel:#142530;--ink:#E7EEF2;--mute:#9AAAB3;--line:#2C4250;--head:#0A2B42;--band:#1B3342;--field:#0F1E27}
+*{box-sizing:border-box}
+html,body{margin:0}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 112px)}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.45 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:90px}
+h1,h2,h3{font-family:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;margin:0}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--head);color:var(--headink)}
+.top .row{max-width:880px;margin:auto;padding:10px 14px 6px;display:flex;align-items:center;gap:12px}
+.logo{width:42px;height:42px;border:2px solid var(--amber);border-radius:6px;display:grid;place-items:center;font:700 13px "Barlow Semi Condensed",sans-serif;color:var(--amber);flex:none}
+.top h1{font-size:19px;line-height:1.1;font-weight:700;letter-spacing:.2px}
+.top small{display:block;font-size:12px;opacity:.8;font-weight:400}
+.who{margin-left:auto;font-size:12px;background:rgba(255,255,255,.12);padding:5px 10px;border-radius:99px;white-space:nowrap}
+.who i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4ADE80;margin-right:6px}
+nav{max-width:880px;margin:auto;display:flex;gap:6px;overflow-x:auto;padding:4px 14px 10px;scrollbar-width:none}
+nav a{flex:none;color:var(--headink);text-decoration:none;font-size:13px;padding:5px 12px;border-radius:99px;border:1px solid rgba(255,255,255,.3)}
+nav a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,label:focus-within{outline:3px solid var(--amber);outline-offset:2px}
+nav a.on{background:var(--amber);color:var(--amberink);border-color:var(--amber);font-weight:600}
+main{max-width:880px;margin:14px auto;padding:0 12px;display:grid;gap:14px}
+section{background:var(--panel);border:1.5px solid var(--ink);border-radius:4px;overflow:hidden}
+section>h2{background:var(--band);font-size:16px;font-weight:700;text-align:center;padding:7px 10px;border-bottom:1.5px solid var(--ink);letter-spacing:.3px}
+.body{padding:12px;display:grid;gap:12px}
+.g2,.g3{display:grid;gap:10px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:620px){.g2,.g3{grid-template-columns:1fr}}
+label.f{display:grid;gap:4px;font-size:13px;font-weight:600}
+label.f span em{font-weight:400;color:var(--mute);font-style:normal}
+input,select,textarea{width:100%;font:inherit;font-weight:400;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:4px;padding:10px;min-height:44px}
+textarea{resize:vertical;min-height:84px}
+.fixed{background:var(--band);font-weight:500}
+.tblock{border:1px solid var(--line);border-radius:4px;padding:10px;display:grid;gap:8px;background:var(--field)}
+.tblock h3{font-size:15px;font-weight:600}
+.tblock .pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tblock input{background:var(--panel)}
+.calc{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(max-width:620px){.calc{grid-template-columns:1fr}}
+.out{border:1px solid var(--line);border-radius:4px;padding:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--field)}
+.out b{font:700 24px "Barlow Semi Condensed",sans-serif;color:var(--head)}
+@media(prefers-color-scheme:dark){.out b{color:#7FC3EE}}
+.out small{display:block;color:var(--mute);font-size:12px}
+.yn{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--field);font-size:13px;font-weight:600}
+.seg{display:flex;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden;flex:none}
+.seg label{padding:9px 18px;cursor:pointer;font-weight:600;min-height:40px;display:grid;place-items:center}
+.seg input{position:absolute;opacity:0;width:1px;min-height:0}
+.seg input:checked+span{color:var(--amberink)}
+.seg label:has(input:checked){background:var(--amber);color:var(--amberink)}
+.sig{display:grid;gap:6px}
+.sig canvas{width:100%;height:120px;background:var(--field);border:1px dashed var(--mute);border-radius:4px;touch-action:none}
+.sig .bar{display:flex;justify-content:space-between;font-size:12px;color:var(--mute)}
+.sig button{background:none;border:0;color:var(--head);font:inherit;font-size:12px;text-decoration:underline;cursor:pointer;min-height:28px}
+@media(prefers-color-scheme:dark){.sig button{color:#7FC3EE}}
+.cam{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.btn{font:600 15px "IBM Plex Sans",sans-serif;border-radius:6px;border:1.5px solid var(--ink);min-height:48px;padding:0 16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.amber{background:var(--amber);color:var(--amberink);border-color:var(--amber)}
+.btn.ghost{background:var(--panel);color:var(--ink)}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.th{border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--field);display:grid}
+.th .img{aspect-ratio:4/3;background:linear-gradient(135deg,#9FB4C0,#6F8896);position:relative;display:grid;place-items:center;color:#fff;font:600 13px "IBM Plex Sans";background-size:cover;background-position:center}
+.th .x{position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:16px;cursor:pointer}
+.th input{border:0;border-top:1px solid var(--line);border-radius:0;min-height:38px;font-size:13px}
+.empty{color:var(--mute);font-size:13px;text-align:center;padding:14px;border:1px dashed var(--line);border-radius:4px}
+.sheet{background:#fff;color:#111;border:1px solid var(--line);padding:10px;display:grid;gap:6px}
+.sheet .t{font:700 12px "Barlow Semi Condensed",sans-serif;text-align:center;border:1px solid #111;padding:4px;background:#E6EBEE}
+.col{display:grid;gap:6px;grid-template-columns:repeat(2,1fr)}
+.col .c{aspect-ratio:4/3;background:linear-gradient(135deg,#9FB4C0,#6F8896);background-size:cover;background-position:center;border:1px solid #111;position:relative}
+.col .c i{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.88);color:#111;font:normal 10px/1.2 "IBM Plex Sans";padding:2px 4px}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--panel);border-top:1.5px solid var(--ink);padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))}
+.dock .in{max-width:880px;margin:auto;display:flex;gap:10px;align-items:center}
+.dock .st{font-size:12px;color:var(--mute);flex:1;line-height:1.3}
+.dock .st b{color:var(--ok)}
+.dock .btn{flex:none}
+footer{text-align:center;color:var(--mute);font-size:12px;padding:8px 12px 0}
+#toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:6px;font-size:13px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%}
+#toast.on{opacity:1}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<meta name="theme-color" content="#0F3A56"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Reportes">
+<style>
+[hidden]{display:none!important}
+body{background:linear-gradient(180deg,#DCE7EE 0,var(--bg) 260px) no-repeat,var(--bg);padding-bottom:116px}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) body{background:var(--bg)}}
+.top{background:linear-gradient(160deg,#0F3A56,#1A6794);border-radius:0 0 22px 22px;box-shadow:0 8px 24px rgba(10,43,66,.28)}
+.top .row{padding:14px 16px 8px}
+.top h1{font-size:21px}
+.logo{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.1);font-size:12px}
+nav{padding:4px 16px 14px}
+nav a{padding:7px 14px;border-radius:99px;background:rgba(255,255,255,.08);border-color:transparent}
+main{margin-top:16px;gap:16px}
+section{border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px rgba(15,58,86,.06),0 10px 28px rgba(15,58,86,.08)}
+section>h2{display:flex;align-items:center;gap:10px;text-align:left;font-size:17px;padding:14px 16px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,var(--band),transparent)}
+section>h2::before{content:"";width:5px;height:22px;border-radius:3px;background:var(--amber);flex:none}
+.body{padding:16px;gap:14px}
+input,select,textarea{border-radius:12px;border:1.5px solid var(--line);padding:11px 12px}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 4px rgba(242,169,0,.22);background:var(--panel)}
+.tblock,.out,.yn{border-radius:14px}
+.out{background:linear-gradient(135deg,var(--field),var(--band))}
+.btn{border-radius:14px}
+.seg{border-radius:10px}
+.sig canvas,.th,.empty,.sheet{border-radius:14px}
+.dock{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));border:1px solid var(--line);border-radius:20px;padding:10px 12px;box-shadow:0 12px 34px rgba(10,43,66,.3)}
+#toast{bottom:104px}
+.install{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--amber);border-radius:14px;padding:10px 12px;font-size:13px;box-shadow:0 6px 18px rgba(15,58,86,.1)}
+.install span{flex:1}
+.install button{font:600 13px inherit;font-family:inherit;border:0;border-radius:10px;min-height:38px;padding:0 14px;cursor:pointer;background:var(--amber);color:var(--amberink)}
+.install button.q{background:none;color:var(--mute);font-size:20px;padding:0 8px}
+.otra{margin-top:6px}
+footer b{color:var(--ink);font-weight:600}
+</style>
+<style>
+.who{border:0;color:#fff;font:inherit;font-size:13px;cursor:pointer;min-height:40px;padding:0 14px}
+.sig canvas{background:#fff}
+dialog{border:0;border-radius:20px;padding:0;width:min(520px,94vw);background:var(--panel);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+dialog::backdrop{background:rgba(8,20,28,.55)}
+dialog h3{font-size:20px;padding:16px 18px 6px}
+#lista{padding:6px 14px;display:grid;gap:8px;max-height:55vh;overflow:auto}
+.ri{display:flex;gap:8px;align-items:stretch}
+.ri .open{flex:1;text-align:left;display:grid;gap:2px;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;cursor:pointer;min-height:48px}
+.ri small{color:var(--mute)}
+.ri .del{background:none;border:1px solid var(--line);color:var(--mute);border-radius:12px;padding:0 12px;font:inherit;font-size:12px;cursor:pointer}
+.dlgb{display:flex;gap:10px;padding:12px 14px 16px}.dlgb .btn{flex:1}
+</style>
 </head>
-<body class="p-4 md:p-8">
+<body>
+<header class="top">
+ <div class="row">
+  <div class="logo">M-INST</div>
+  <h1>SISTEMA DE GESTIÓN DE REPORTES<small>Sección de instrumentos</small></h1>
+  <button class="who" id="open" type="button">📂 Reportes</button>
+ </div>
+ <nav id="nav">
+  <a href="#s1" class="on">Encabezado</a><a href="#s2">Tiempos</a><a href="#s3">Trabajo</a><a href="#s4">Cierre</a><a href="#s5">Evidencias</a><a href="#s6">Vista previa</a>
+ </nav>
+</header>
 
-    <!-- INTERFAZ DE USUARIO -->
-    <div class="max-w-4xl mx-auto">
-        
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">SISTEMA DE GESTIÓN DE REPORTES</h1>
-            <p class="text-lg text-blue-600 font-semibold">Sección de Instrumentos</p>
-            <p class="text-sm text-gray-500 mt-2">Diseñado por Eduardo Palacios</p>
-        </div>
+<main>
+ <div class="install" id="inst" hidden><span>📲 Instala la app en tu celular: se abre como una aplicación y funciona sin internet.</span><button id="ib">Instalar</button><button class="q" id="ix" aria-label="Cerrar aviso">×</button></div>
+ <section id="s1"><h2>REPORTE DE EJECUCIÓN · GERENCIA DE MANTENIMIENTO</h2>
+  <div class="body">
+   <div class="g2">
+    <label class="f">Aviso<input placeholder="# de aviso" inputmode="numeric"></label>
+    <label class="f">Orden de trabajo<input placeholder="# de orden" inputmode="numeric"></label>
+   </div>
+   <div class="g2">
+    <label class="f">Especialidad<input class="fixed" value="M-INST" readonly></label>
+    <label class="f">Grupo<select><option>Grupo 1</option><option>Grupo 2</option><option>Grupo 3</option><option>Grupo 4</option></select></label>
+   </div>
+   <div class="g3">
+    <label class="f">Planta<select id="planta"><option>Planta 0</option><option>Planta 1</option><option>Planta 8</option><option selected>Planta 11</option><option>Planta 12</option><option>Planta 14</option><option>NPK</option><option>Planta 20</option><option>Otra</option></select><input id="planta-otra" class="otra" placeholder="¿Cuál planta?" hidden></label>
+    <label class="f">TAG<input value="AIT11E01" autocapitalize="characters"></label>
+    <label class="f">Descripción<input placeholder="Descripción del equipo"></label>
+   </div>
+  </div>
+ </section>
 
-        <form id="captureForm" class="space-y-6">
-            
-            <!-- Tarjeta 1: Identificación -->
-            <div class="card">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2"><i class="fas fa-info-circle text-blue-500 mr-2"></i>Identificación del Reporte</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="label-modern"># de Aviso</label>
-                        <input type="text" id="aviso" class="input-modern" placeholder="Ej: AV-2023-001">
-                    </div>
-                    <div>
-                        <label class="label-modern"># de Orden de Trabajo</label>
-                        <input type="text" id="orden" class="input-modern" placeholder="Ej: OT-4590">
-                    </div>
-                    <div>
-                        <label class="label-modern">Planta</label>
-                        <select id="planta" class="input-modern">
-                            <option value="">Seleccione una planta...</option>
-                            <option value="Planta 0">Planta 0</option>
-                            <option value="Planta 1">Planta 1</option>
-                            <option value="Planta 8">Planta 8</option>
-                            <option value="Planta 11">Planta 11</option>
-                            <option value="Planta 12">Planta 12</option>
-                            <option value="Planta 14">Planta 14</option>
-                            <option value="Planta 15">Planta 15</option>
-                            <option value="NPK">NPK</option>
-                            <option value="Planta 20">Planta 20</option>
-                            <option value="Otra">Otra</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="label-modern">Tag del Equipo</label>
-                        <input type="text" id="tag" class="input-modern" placeholder="Ej: AIT11E01">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="label-modern">Descripción del Equipo</label>
-                        <input type="text" id="descripcion" class="input-modern" placeholder="Nombre o descripción breve del instrumento">
-                    </div>
-                </div>
-            </div>
+ <section id="s2"><h2>INFORMACIÓN DE TIEMPO</h2>
+  <div class="body">
+   <div class="g3">
+    <div class="tblock"><h3>Salida de servicio</h3><div class="pair"><input type="date" id="d1" aria-label="Fecha de salida"><input type="time" id="t1" aria-label="Hora de salida"></div></div>
+    <div class="tblock"><h3>Inicio de mantenimiento</h3><div class="pair"><input type="date" id="d2" aria-label="Fecha de inicio"><input type="time" id="t2" aria-label="Hora de inicio"></div></div>
+    <div class="tblock"><h3>Entrega a procesos</h3><div class="pair"><input type="date" id="d3" aria-label="Fecha de entrega"><input type="time" id="t3" aria-label="Hora de entrega"></div></div>
+   </div>
+   <div class="calc">
+    <div class="out"><div>Tiempo total fuera de servicio<small>Se calcula solo</small></div><b id="o1">— h — min</b></div>
+    <div class="out"><div>Tiempo neto de mantenimiento<small>Se calcula solo</small></div><b id="o2">— h — min</b></div>
+   </div>
+   <label class="f">Observaciones de tiempo<textarea placeholder="Escriba aquí…"></textarea></label>
+  </div>
+ </section>
 
-            <!-- Tarjeta 2: Tiempos -->
-            <div class="card">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2"><i class="fas fa-clock text-blue-500 mr-2"></i>Información de Tiempo</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <label class="label-modern text-blue-700">Salida de Servicio</label>
-                        <input type="datetime-local" id="salida" class="input-modern">
-                    </div>
-                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <label class="label-modern text-blue-700">Inicio de Mantenimiento</label>
-                        <input type="datetime-local" id="inicio" class="input-modern">
-                    </div>
-                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <label class="label-modern text-blue-700">Entrega a Procesos</label>
-                        <input type="datetime-local" id="entrega" class="input-modern">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mt-4">
-                    <div class="text-center p-2 bg-blue-50 rounded-lg">
-                        <span class="text-xs text-gray-500 block">Tiempo Total Fuera de Servicio</span>
-                        <span id="displayTotalFuera" class="text-lg font-bold text-blue-800">00:00 HH:MM</span>
-                    </div>
-                    <div class="text-center p-2 bg-blue-50 rounded-lg">
-                        <span class="text-xs text-gray-500 block">Tiempo Neto de Mantenimiento</span>
-                        <span id="displayTotalNeto" class="text-lg font-bold text-blue-800">00:00 HH:MM</span>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <label class="label-modern">Observaciones de Tiempo (Opcional)</label>
-                    <input type="text" id="obsTiempo" class="input-modern" placeholder="Ej: Retraso por espera de repuesto">
-                </div>
-            </div>
+ <section id="s3"><h2>DESCRIPCIÓN DEL TRABAJO</h2>
+  <div class="body">
+   <label class="f">Causa de la intervención / síntoma presentado<textarea></textarea></label>
+   <label class="f">Descripción del estado en que se encontraron las partes / componentes<textarea></textarea></label>
+   <label class="f">Diagnóstico / causa<textarea></textarea></label>
+   <label class="f">Trabajos ejecutados<textarea style="min-height:120px"></textarea></label>
+   <label class="f">Repuestos utilizados<textarea></textarea></label>
+  </div>
+ </section>
 
-            <!-- Tarjeta 3: Descripción del Trabajo -->
-            <div class="card">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2"><i class="fas fa-tools text-blue-500 mr-2"></i>Descripción del Trabajo</h2>
-                <div class="space-y-4">
-                    <div>
-                        <label class="label-modern">Causa de la Intervención / Síntoma Presentado</label>
-                        <textarea id="causa" class="input-modern" rows="2"></textarea>
-                    </div>
-                    <div>
-                        <label class="label-modern">Estado en que se encontraron las Partes / Componentes</label>
-                        <textarea id="estado" class="input-modern" rows="2"></textarea>
-                    </div>
-                    <div>
-                        <label class="label-modern">Diagnóstico / Causa</label>
-                        <textarea id="diagnostico" class="input-modern" rows="2"></textarea>
-                    </div>
-                    <div>
-                        <label class="label-modern">Trabajos Ejecutados</label>
-                        <textarea id="trabajos" class="input-modern" rows="3"></textarea>
-                    </div>
-                    <div>
-                        <label class="label-modern">Repuestos Utilizados</label>
-                        <textarea id="repuestos" class="input-modern" rows="2"></textarea>
-                    </div>
-                </div>
-            </div>
+ <section id="s4"><h2>CIERRE DEL REPORTE</h2>
+  <div class="body">
+   <div class="g2">
+    <div class="yn">La planta o equipo crítico salió de servicio<div class="seg"><label><input type="radio" name="crit"><span>SÍ</span></label><label><input type="radio" name="crit" checked><span>NO</span></label></div></div>
+    <div class="yn">Requiere análisis de ingeniería<div class="seg"><label><input type="radio" name="ing"><span>SÍ</span></label><label><input type="radio" name="ing" checked><span>NO</span></label></div></div>
+   </div>
+   <label class="f">Supervisor de operación que recibió el trabajo<input placeholder="Nombre del supervisor"></label>
+   <label class="f">Observaciones generales (proceso / mantenimiento)<textarea placeholder="Escriba aquí…"></textarea></label>
+   <div class="g2">
+    <div class="sig"><b style="font-size:13px">Firma del técnico de mantenimiento</b><canvas></canvas><div class="bar"><span>Firme con el dedo</span><button type="button" class="clr">Borrar firma</button></div></div>
+    <div class="sig"><b style="font-size:13px">Firma del supervisor de mantenimiento</b><canvas></canvas><div class="bar"><span>Firme con el dedo</span><button type="button" class="clr">Borrar firma</button></div></div>
+   </div>
+  </div>
+ </section>
 
-            <!-- Tarjeta 4: Cierre y Firmas -->
-            <div class="card">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2"><i class="fas fa-check-circle text-blue-500 mr-2"></i>Cierre y Observaciones</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
-                        <span class="label-modern mb-0">¿Equipo Crítico Salió de Servicio?</span>
-                        <div class="flex gap-4">
-                            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="critico" value="SI"> SI</label>
-                            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="critico" value="NO" checked> NO</label>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
-                        <span class="label-modern mb-0">¿Requiere Análisis de Ingeniería?</span>
-                        <div class="flex gap-4">
-                            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="analisis" value="SI"> SI</label>
-                            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="analisis" value="NO" checked> NO</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-4">
-                    <div>
-                        <label class="label-modern">Supervisor de Operación que recibió el trabajo</label>
-                        <input type="text" id="supervisorOp" class="input-modern" placeholder="Nombre del supervisor">
-                    </div>
-                    <div>
-                        <label class="label-modern">Observaciones Generales</label>
-                        <textarea id="observaciones" class="input-modern" rows="2"></textarea>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="label-modern">Firma del Técnico de Mantenimiento</label>
-                            <input type="text" id="firmaTecnico" class="input-modern" placeholder="Nombre del técnico">
-                        </div>
-                        <div>
-                            <label class="label-modern">Firma del Supervisor de Mantenimiento</label>
-                            <input type="text" id="firmaSupervisor" class="input-modern" placeholder="Nombre del supervisor">
-                        </div>
-                    </div>
-                </div>
-            </div>
+ <section id="s5"><h2>EVIDENCIAS FOTOGRÁFICAS</h2>
+  <div class="body">
+   <div class="cam">
+    <label class="btn amber" style="cursor:pointer">📷 Tomar foto<input id="cam" type="file" accept="image/*" capture="environment" hidden></label>
+    <label class="btn ghost" style="cursor:pointer">Galería<input id="gal" type="file" accept="image/*" multiple hidden></label>
+   </div>
+   <div id="thumbs" class="thumbs"></div>
+   <div id="empty" class="empty">Aún no hay fotos. Toque “Tomar foto” para agregar la primera evidencia.</div>
+  </div>
+ </section>
 
-            <!-- Tarjeta 5: Evidencias Fotográficas -->
-            <div class="card">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2"><i class="fas fa-camera text-blue-500 mr-2"></i>Evidencias Fotográficas</h2>
-                <div class="border-2 border-dashed border-blue-300 rounded-lg p-6 text-center bg-blue-50 hover:bg-blue-100 transition cursor-pointer" onclick="document.getElementById('photoInput').click()">
-                    <i class="fas fa-cloud-upload-alt text-4xl text-blue-400 mb-2"></i>
-                    <p class="text-blue-600 font-semibold">Haz clic para tomar foto o subir imágenes</p>
-                    <p class="text-xs text-gray-500">Formatos: JPG, PNG.</p>
-                </div>
-                <input type="file" id="photoInput" accept="image/*" capture="environment" multiple class="hidden">
-                <div id="photoGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4"></div>
-            </div>
+ <section id="s6"><h2>VISTA PREVIA DEL ANEXO FOTOGRÁFICO</h2>
+  <div class="body">
+   <div class="sheet"><div class="t" id="ptitle">REGISTRO FOTOGRÁFICO</div><div class="col" id="col"></div></div>
+   <p style="margin:0;font-size:13px;color:var(--mute)">El collage se acomoda solo según la cantidad de fotos y va al final del PDF, después del formato. El pie del PDF conserva la revisión del formato: Versión. 2020-09-09.</p>
+  </div>
+ </section>
+ <footer><b>Diseñado por Eduardo Palacios</b><br>Versión. 2020-09-09</footer>
+</main>
 
-            <!-- Botón Generar PDF -->
-            <div class="text-center mt-8 mb-12">
-                <button type="button" onclick="generarReportePDF()" class="bg-gradient-to-r from-blue-600 to-blue-800 text-white text-lg font-bold py-4 px-12 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition transform duration-200">
-                    <i class="fas fa-file-pdf mr-2"></i> GENERAR REPORTE PDF
-                </button>
-            </div>
-        </form>
-    </div>
+<div class="dock"><div class="in">
+ <div class="st"><b id="stat">Guardado en este dispositivo</b><br>Funciona sin internet</div>
+ <button class="btn ghost" id="save">Guardar</button>
+ <button class="btn amber" id="pdf">Generar PDF</button>
+</div></div>
+<div id="toast" role="status"></div>
 
-    <!-- PLANTILLA OCULTA PARA EL PDF -->
-    <div id="pdf-template">
-        <table class="pdf-table">
-            <tr>
-                <td rowspan="2" style="width: 40%; text-align: center; vertical-align: middle;">
-                    <div style="font-weight: bold; font-size: 12px;">REPORTE DE EJECUCIÓN</div>
-                    <div style="font-weight: bold; font-size: 12px;">GERENCIA DE MANTENIMIENTO</div>
-                </td>
-                <td style="width: 35%;">
-                    <span class="pdf-label">ESPECIALIDAD:</span> M-INST<br>
-                    <span class="pdf-label">GRUPO:</span> Grupo 1
-                </td>
-                <td style="width: 25%;">
-                    <span class="pdf-label">AVISO:</span> <span id="pdf_aviso"></span><br>
-                    <span class="pdf-label">ORDEN DE TRABAJO:</span> <span id="pdf_orden"></span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <span class="pdf-label">PLANTA:</span> <span id="pdf_planta"></span> &nbsp;&nbsp; 
-                    <span class="pdf-label">TAG:</span> <span id="pdf_tag"></span><br>
-                    <span class="pdf-label">DESCRIPCIÓN:</span> <span id="pdf_descripcion"></span>
-                </td>
-            </tr>
-        </table>
 
-        <div class="pdf-section-title" style="margin-top: 5px;">INFORMACIÓN DE TIEMPO</div>
-        <table class="pdf-table">
-            <tr>
-                <td style="width: 33%; text-align: center; font-weight: bold;">Fecha y Hora de Salida de Servicio</td>
-                <td style="width: 33%; text-align: center; font-weight: bold;">Fecha y Hora de Inicio de Mantenimiento</td>
-                <td style="width: 34%; text-align: center; font-weight: bold;">Fecha y Hora de Entrega a Procesos</td>
-            </tr>
-            <tr>
-                <td style="text-align: center;"><span id="pdf_salida"></span></td>
-                <td style="text-align: center;"><span id="pdf_inicio"></span></td>
-                <td style="text-align: center;"><span id="pdf_entrega"></span></td>
-            </tr>
-            <tr>
-                <td colspan="2" style="text-align: center; font-weight: bold;">Tiempo Total fuera de servicio: <span id="pdf_total_fuera"></span> HH:MM</td>
-                <td style="text-align: center; font-weight: bold;">Tiempo Neto de Mantenimiento: <span id="pdf_total_neto"></span> HH:MM</td>
-            </tr>
-        </table>
-        <div style="border: 1px solid black; border-top: none; padding: 4px;">
-            <span class="pdf-label">Observaciones de Tiempo:</span> <span id="pdf_obs_tiempo"></span>
-        </div>
-
-        <div class="pdf-section-title" style="margin-top: 5px;">DESCRIPCIÓN DEL TRABAJO (Favor llenar siempre la información solicitada)</div>
-        <table class="pdf-table">
-            <tr><td style="height: 30px;">
-                <span class="pdf-label">Causa de la Intervención / Síntoma Presentado:</span><br>
-                <span id="pdf_causa" class="pdf-text"></span>
-            </td></tr>
-            <tr><td style="height: 30px;">
-                <span class="pdf-label">Descripción del Estado en que se encontraron las Partes / Componentes:</span><br>
-                <span id="pdf_estado" class="pdf-text"></span>
-            </td></tr>
-            <tr><td style="height: 30px;">
-                <span class="pdf-label">Diagnostico/Causa:</span><br>
-                <span id="pdf_diagnostico" class="pdf-text"></span>
-            </td></tr>
-            <tr><td style="height: 40px;">
-                <span class="pdf-label">Trabajos Ejecutados:</span><br>
-                <span id="pdf_trabajos" class="pdf-text"></span>
-            </td></tr>
-            <tr><td style="height: 30px;">
-                <span class="pdf-label">Repuestos Utilizados:</span><br>
-                <span id="pdf_repuestos" class="pdf-text"></span>
-            </td></tr>
-        </table>
-
-        <table class="pdf-table">
-            <tr>
-                <td style="width: 33%;">
-                    <span class="pdf-label">La Planta o Equipo Critico Salió de Servicio</span><br>
-                    <span class="pdf-checkbox" id="pdf_critico_si">X</span> SI &nbsp;&nbsp;
-                    <span class="pdf-checkbox" id="pdf_critico_no">X</span> NO
-                </td>
-                <td style="width: 33%;">
-                    <span class="pdf-label">Requiere Análisis de Ingeniería</span><br>
-                    <span class="pdf-checkbox" id="pdf_analisis_si">X</span> SI &nbsp;&nbsp;
-                    <span class="pdf-checkbox" id="pdf_analisis_no">X</span> NO
-                </td>
-                <td style="width: 34%;">
-                    <span class="pdf-label">Supervisor de Operación que recibió el trabajo:</span><br>
-                    <span id="pdf_supervisor_op"></span>
-                </td>
-            </tr>
-        </table>
-
-        <table class="pdf-table">
-            <tr>
-                <td colspan="2" style="height: 25px;">
-                    <span class="pdf-label">Observaciones Generales (Proceso/ Mantenimiento):</span><br>
-                    <span id="pdf_observaciones" class="pdf-text"></span>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 50%; height: 40px; vertical-align: bottom;">
-                    <span class="pdf-label">Firma del Técnico de Mantenimiento:</span><br>
-                    <span id="pdf_firma_tecnico" style="font-style: italic;"></span>
-                </td>
-                <td style="width: 50%; height: 40px; vertical-align: bottom;">
-                    <span class="pdf-label">Firma del Supervisor de Mantenimiento:</span><br>
-                    <span id="pdf_firma_supervisor" style="font-style: italic;"></span>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <script>
-        // --- Registro del Service Worker para PWA ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => console.log('Service Worker registrado:', registration))
-                    .catch(error => console.log('Error al registrar Service Worker:', error));
-            });
-        }
-
-        // --- Lógica de Tiempos ---
-        const inputsTiempo = ['salida', 'inicio', 'entrega'];
-        inputsTiempo.forEach(id => {
-            document.getElementById(id).addEventListener('change', calcularTiempos);
-        });
-
-        function calcularTiempos() {
-            const salida = document.getElementById('salida').value;
-            const inicio = document.getElementById('inicio').value;
-            const entrega = document.getElementById('entrega').value;
-
-            if (salida && entrega) {
-                const start = new Date(salida);
-                const end = new Date(entrega);
-                const diffMs = end - start;
-                if (diffMs > 0) {
-                    const diffHrs = Math.floor(diffMs / 3600000);
-                    const diffMins = Math.floor((diffMs % 3600000) / 60000);
-                    const tiempoStr = `${String(diffHrs).padStart(2, '0')}:${String(diffMins).padStart(2, '0')}`;
-                    document.getElementById('displayTotalFuera').innerText = `${tiempoStr} HH:MM`;
-                }
-            }
-
-            if (inicio && entrega) {
-                const start = new Date(inicio);
-                const end = new Date(entrega);
-                const diffMs = end - start;
-                if (diffMs > 0) {
-                    const diffHrs = Math.floor(diffMs / 3600000);
-                    const diffMins = Math.floor((diffMs % 3600000) / 60000);
-                    const tiempoStr = `${String(diffHrs).padStart(2, '0')}:${String(diffMins).padStart(2, '0')}`;
-                    document.getElementById('displayTotalNeto').innerText = `${tiempoStr} HH:MM`;
-                }
-            }
-        }
-
-        // --- Lógica de Fotos ---
-        let fotosArray = [];
-        const photoInput = document.getElementById('photoInput');
-        const photoGrid = document.getElementById('photoGrid');
-
-        photoInput.addEventListener('change', function(e) {
-            const files = e.target.files;
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    fotosArray.push(event.target.result);
-                    renderizarFotos();
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function renderizarFotos() {
-            photoGrid.innerHTML = '';
-            fotosArray.forEach((foto, index) => {
-                const div = document.createElement('div');
-                div.className = 'relative group rounded-lg overflow-hidden shadow-md border border-gray-200';
-                div.innerHTML = `
-                    <img src="${foto}" class="w-full h-32 object-cover">
-                    <button type="button" onclick="eliminarFoto(${index})" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                photoGrid.appendChild(div);
-            });
-        }
-
-        function eliminarFoto(index) {
-            fotosArray.splice(index, 1);
-            renderizarFotos();
-        }
-
-        // --- Generación del PDF ---
-        async function generarReportePDF() {
-            const { jsPDF } = window.jspdf;
-
-            // 1. Transferir datos a la plantilla
-            document.getElementById('pdf_aviso').innerText = document.getElementById('aviso').value || 'N/A';
-            document.getElementById('pdf_orden').innerText = document.getElementById('orden').value || 'N/A';
-            document.getElementById('pdf_planta').innerText = document.getElementById('planta').value || 'N/A';
-            document.getElementById('pdf_tag').innerText = document.getElementById('tag').value || 'N/A';
-            document.getElementById('pdf_descripcion').innerText = document.getElementById('descripcion').value || 'N/A';
-
-            const formatFecha = (val) => {
-                if(!val) return 'N/A';
-                const d = new Date(val);
-                return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-            };
-            document.getElementById('pdf_salida').innerText = formatFecha(document.getElementById('salida').value);
-            document.getElementById('pdf_inicio').innerText = formatFecha(document.getElementById('inicio').value);
-            document.getElementById('pdf_entrega').innerText = formatFecha(document.getElementById('entrega').value);
-
-            document.getElementById('pdf_total_fuera').innerText = document.getElementById('displayTotalFuera').innerText.replace(' HH:MM', '');
-            document.getElementById('pdf_total_neto').innerText = document.getElementById('displayTotalNeto').innerText.replace(' HH:MM', '');
-            document.getElementById('pdf_obs_tiempo').innerText = document.getElementById('obsTiempo').value || '';
-
-            document.getElementById('pdf_causa').innerText = document.getElementById('causa').value || '.';
-            document.getElementById('pdf_estado').innerText = document.getElementById('estado').value || '.';
-            document.getElementById('pdf_diagnostico').innerText = document.getElementById('diagnostico').value || '.';
-            document.getElementById('pdf_trabajos').innerText = document.getElementById('trabajos').value || '.';
-            document.getElementById('pdf_repuestos').innerText = document.getElementById('repuestos').value || '.';
-
-            const critico = document.querySelector('input[name="critico"]:checked').value;
-            document.getElementById('pdf_critico_si').innerText = critico === 'SI' ? 'X' : '';
-            document.getElementById('pdf_critico_no').innerText = critico === 'NO' ? 'X' : '';
-
-            const analisis = document.querySelector('input[name="analisis"]:checked').value;
-            document.getElementById('pdf_analisis_si').innerText = analisis === 'SI' ? 'X' : '';
-            document.getElementById('pdf_analisis_no').innerText = analisis === 'NO' ? 'X' : '';
-
-            document.getElementById('pdf_supervisor_op').innerText = document.getElementById('supervisorOp').value || 'N/A';
-            document.getElementById('pdf_observaciones').innerText = document.getElementById('observaciones').value || '.';
-            document.getElementById('pdf_firma_tecnico').innerText = document.getElementById('firmaTecnico').value || 'N/A';
-            document.getElementById('pdf_firma_supervisor').innerText = document.getElementById('firmaSupervisor').value || 'N/A';
-
-            // 2. Capturar plantilla
-            const template = document.getElementById('pdf-template');
-            const canvas = await html2canvas(template, { scale: 2, useCORS: true });
-            const imgData = canvas.toDataURL('image/png');
-
-            // 3. Crear PDF
-            const doc = new jsPDF('p', 'mm', 'a4');
-            const imgWidth = 210;
-            const pageHeight = 297;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            
-            let heightLeft = imgHeight;
-            let position = 0;
-
-            doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                doc.addPage();
-                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-
-            // 4. Collage de Fotos
-            if (fotosArray.length > 0) {
-                doc.addPage();
-                doc.setFontSize(16);
-                doc.text("EVIDENCIAS FOTOGRÁFICAS", 105, 15, { align: "center" });
-                
-                let x = 10;
-                let y = 25;
-                const imgWidthFoto = 60;
-                const imgHeightFoto = 45;
-                const margin = 10;
-                const maxCols = 3;
-                let col = 0;
-
-                for (let i = 0; i < fotosArray.length; i++) {
-                    if (col >= maxCols) {
-                        col = 0;
-                        x = 10;
-                        y += imgHeightFoto + margin;
-                    }
-                    if (y + imgHeightFoto > 280) {
-                        doc.addPage();
-                        y = 20;
-                        x = 10;
-                        col = 0;
-                    }
-                    doc.addImage(fotosArray[i], 'JPEG', x, y, imgWidthFoto, imgHeightFoto);
-                    x += imgWidthFoto + margin;
-                    col++;
-                }
-            }
-
-            // 5. Guardar
-            const tag = document.getElementById('tag').value || 'Equipo';
-            doc.save(`Reporte_Mantenimiento_${tag}.pdf`);
-        }
-    </script>
+<dialog id="dlg"><h3>Reportes de este dispositivo</h3><div id="lista"></div><div class="dlgb"><button class="btn ghost" id="cerrar" type="button">Cerrar</button><button class="btn amber" id="nuevo" type="button">+ Nuevo reporte</button></div></dialog>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
